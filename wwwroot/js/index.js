@@ -74,16 +74,18 @@ function tick() {
 }
 
 const connection = new signalR.HubConnectionBuilder().withUrl("/ticker").build();
+const figCaption = document.createElement('figcaption'),
+      h1 = document.querySelector('h1')
+figure.appendChild(figCaption)
 
 const signalRBuff = []
+let tickCount = 0
 
 connection.on("ReceiveMessage", function (user, message) {
+    h1.textContent = 'Ticker works!'
     signalRBuff.push(+message)
+    figCaption.textContent = `Ticker is pushing data into the chart every second via SignalR connection. There where ${++tickCount} ticks. The last tick was ${message}.`
 })
-
-const figCaption = document.createElement('figcaption')
-figCaption.textContent = 'Ticker sends data here.'
-figure.appendChild(figCaption)
 
 connection.start()
 

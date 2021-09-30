@@ -7,37 +7,37 @@ using webapi_signalr.Hubs;
 namespace webapi_signalr.Services
 {
 
-    public interface IOpcUaService
+    public interface ITickerService
     {
-        Task WriteMessage(string message);
+        Task WriteMessage(int rInt);
     }
 
-    public class OpcUaService : IOpcUaService
+    public class TickerService : ITickerService
     {
         public IHubContext<TickerHub, IChatClient> _strongChatHubContext { get; }
         private readonly Random _random = new Random();
         private readonly int top = 65;
         private readonly int bottom = 30;
 
-        public OpcUaService(IHubContext<TickerHub, IChatClient> chatHubContext)
+        public TickerService(IHubContext<TickerHub, IChatClient> chatHubContext)
         {
 
             _strongChatHubContext = chatHubContext;
 
             Task.Run(async () => {
                 while(true) {    
-                    await this.WriteMessage("async message");
+                    int rInt = _random.Next(0, top);
+                    rInt += bottom;
+                    await this.WriteMessage(rInt);
                     Thread.Sleep(1000);
                 }
             });
 
         }
 
-        public async Task WriteMessage(string message)
+        public async Task WriteMessage(int rInt)
         {
-            int rInt = _random.Next(0, top);
-            rInt += bottom;
-            System.Console.WriteLine($"OpcUaService data: {rInt}");
+            System.Console.WriteLine($"TickerService data: {rInt}");
             await _strongChatHubContext.Clients.All.ReceiveMessage("ticker", "" + rInt);
         }
     }
