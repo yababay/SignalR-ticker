@@ -4,9 +4,9 @@ figure.style.height = '400px'
 
 var n = 40,
     bottomLimit = 30
-    //random = d3.randomNormal(0, .2),
     random = () => d3.randomInt(0, 100 - bottomLimit - 5)() + bottomLimit,
-    data = d3.range(n).map(random);
+    //data = d3.range(n).map(random);
+    data = d3.range(n).map(() => 0);
 
 var svg = d3.select(figure).append("svg").attr("width", figure.offsetWidth).attr("height", "400"),
     margin = {top: 20, right: 20, bottom: 20, left: 40},
@@ -49,26 +49,27 @@ g.append("g")
     .attr("stroke", "black")
     .attr("fill", "none")
   .transition()
-    .duration(1000)
+    .duration(300)
     .ease(d3.easeLinear)
     .on("start", tick);
 
 
 function tick() {
 
-  // Redraw the line.
-  d3.select(this)
-      .attr("d", line)
-      .attr("transform", null);
+    if(signalRBuff.length) data.push(signalRBuff.shift())
+    else data.push(data[data.length - 1])
+    d3.select(this)
+        .attr("d", line)
+        .attr("transform", null);
 
-  // Slide it to the left.
-  d3.active(this)
-      .attr("transform", "translate(" + x(-1) + ",0)")
-    .transition()
-      .on("start", tick);
+    // Slide it to the left.
+    d3.active(this)
+        .attr("transform", "translate(" + x(-1) + ",0)")
+        .transition()
+        .on("start", tick);
 
-  // Pop the old data point off the front.
-  while(data.length > n) data.shift();
+    // Pop the old data point off the front.
+    while(data.length > n) data.shift();
 
 }
 
@@ -77,7 +78,7 @@ const connection = new signalR.HubConnectionBuilder().withUrl("/ticker").build()
 const signalRBuff = []
 
 connection.on("ReceiveMessage", function (user, message) {
-    data.push(+message)
+    signalRBuff.push(+message)
 })
 
 const figCaption = document.createElement('figcaption')
