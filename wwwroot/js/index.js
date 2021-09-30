@@ -2,11 +2,13 @@ const figure = document.querySelector('figure')
 figure.style.width = '100%'
 figure.style.height = '400px'
 
+const signalRBuff = []
+
 var n = 40,
     bottomLimit = 30
     random = () => d3.randomInt(0, 100 - bottomLimit - 5)() + bottomLimit,
     //data = d3.range(n).map(random);
-    data = d3.range(n).map(() => 0);
+    data = d3.range(n).map(() => 20);
 
 var svg = d3.select(figure).append("svg").attr("width", figure.offsetWidth).attr("height", "400"),
     margin = {top: 20, right: 20, bottom: 20, left: 40},
@@ -46,7 +48,7 @@ g.append("g")
   .append("path")
     .datum(data)
     .attr("class", "line")
-    .attr("stroke", "black")
+    .attr("stroke", "blue")
     .attr("fill", "none")
   .transition()
     .duration(300)
@@ -76,15 +78,15 @@ function tick() {
 const connection = new signalR.HubConnectionBuilder().withUrl("/ticker").build();
 const figCaption = document.createElement('figcaption'),
       h1 = document.querySelector('h1')
+figCaption.classList.add('figure-caption')
 figure.appendChild(figCaption)
 
-const signalRBuff = []
 let tickCount = 0
 
 connection.on("ReceiveMessage", function (user, message) {
     h1.textContent = 'Ticker works!'
     signalRBuff.push(+message)
-    figCaption.textContent = `Ticker is pushing data into the chart every second via SignalR connection. There where ${++tickCount} ticks. The last tick was ${message}.`
+    figCaption.textContent = `Ticker is pushing random numbers in range from 30 to 95 into the chart every second via SignalR connection. There where ${++tickCount} ticks. The last tick was ${message}.`
 })
 
 connection.start()
