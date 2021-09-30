@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using webapi_signalr.Hubs;
+using webapi_signalr.Services;
 
 namespace webapi_signalr
 {
@@ -27,11 +28,11 @@ namespace webapi_signalr
         {
             services.AddControllers();
             services.AddSignalR();
-            services.AddScoped<IOpcUaService, OpcUaService>();
+            services.AddScoped<ITickerService, TickerService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOpcUaService opcua)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ITickerService ticker)
         {
             if (env.IsDevelopment())
             {
