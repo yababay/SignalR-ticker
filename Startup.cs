@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using webapi_signalr.Hubs;
+using webapi_signalr.Services;
 
 namespace webapi_signalr
 {
