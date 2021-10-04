@@ -11,3 +11,6 @@ dotnet watch run
 The page will be opened in seperate tab of your default browser.
 
 The most interest branch here is `d3-line-chart`. It demonstrates dynamically pushing data received from server into d3 chart.
+
+Is there a way to express the same idea with Python? Of course! You cat see a solution on the `pithon` branch. But it is made with simple Websocket, not SignalR connection.
+
